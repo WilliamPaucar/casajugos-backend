@@ -8,6 +8,10 @@ import { CategoriasModule } from './categorias/categorias.module';
 import { Categoria } from './categorias/categoria.entity';
 import { InsumosModule } from './insumos/insumos.module';
 import { Insumo } from './insumos/insumo.entity';
+import { ProductosInsumosModule } from './productos-insumos/productos-insumos.module';
+import { ProductoInsumo } from './productos-insumos/producto-insumo.entity';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { Usuario } from './usuarios/usuario.entity';
 
 @Module({
   imports: [
@@ -18,10 +22,10 @@ import { Insumo } from './insumos/insumo.entity';
       username: 'admin',
       password: 'admin123',
       database: 'casajugos',
-      entities: [Producto,Categoria, Insumo],
+      entities: [Producto,Categoria, Insumo, ProductoInsumo,Usuario],
       synchronize: false, // Cambiar a false en producción
     })
-    ,ProductosModule, CategoriasModule, InsumosModule],
+    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule],
   controllers: [AppController],
   providers: [AppService],
 })
