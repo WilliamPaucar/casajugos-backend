@@ -12,6 +12,7 @@ import { ProductosInsumosModule } from './productos-insumos/productos-insumos.mo
 import { ProductoInsumo } from './productos-insumos/producto-insumo.entity';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { Usuario } from './usuarios/usuario.entity';
+import { VentasModule } from './ventas/ventas.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { Usuario } from './usuarios/usuario.entity';
       entities: [Producto,Categoria, Insumo, ProductoInsumo,Usuario],
       synchronize: false, // Cambiar a false en producción
     })
-    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule],
+    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule, VentasModule],
   controllers: [AppController],
   providers: [AppService],
 })
