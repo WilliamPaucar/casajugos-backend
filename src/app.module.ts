@@ -14,6 +14,8 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { Usuario } from './usuarios/usuario.entity';
 import { VentasModule } from './ventas/ventas.module';
 import { Venta } from './ventas/ventas.entity';
+import { DetalleVentasModule } from './detalle-ventas/detalle-ventas.module';
+import { DetalleVenta } from './detalle-ventas/detalle-venta.entity';
 
 @Module({
   imports: [
@@ -24,10 +26,10 @@ import { Venta } from './ventas/ventas.entity';
       username: 'admin',
       password: 'admin123',
       database: 'casajugos',
-      entities: [Producto,Categoria, Insumo, ProductoInsumo,Usuario,Venta],
+      entities: [Producto,Categoria, Insumo, ProductoInsumo,Usuario,Venta, DetalleVenta],
       synchronize: false, // Cambiar a false en producción
     })
-    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule, VentasModule],
+    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule, VentasModule, DetalleVentasModule],
   controllers: [AppController],
   providers: [AppService],
 })
