@@ -22,8 +22,11 @@ export class UsuariosRepository {
     return this.repo.find();
   }
 
-  findById(id: number) {
-    return this.repo.findOneBy({ id });
+  findById(id: number): Promise<Usuario> {
+    return this.repo.findOne({
+      where: { id },
+      relations: ['rol'], // ⚠️ importante
+    });
   }
 
   findByEmail(email: string) {

@@ -1,9 +1,11 @@
 import {
     Controller, Post, Get, Param, Body, Put, Delete, ParseIntPipe,
+    Patch,
   } from '@nestjs/common';
   import { UsuariosService } from './usuarios.service';
   import { CreateUsuarioDto } from './dto/create-usuario.dto';
   import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { AsignarRolDto } from './dto/asignar-rol-dto';
   
   @Controller('usuarios')
   export class UsuariosController {
@@ -33,5 +35,13 @@ import {
     remove(@Param('id', ParseIntPipe) id: number) {
       return this.service.remove(id);
     }
+
+    @Patch(':id/rol')
+asignarRol(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() dto: AsignarRolDto,
+) {
+  return this.service.asignarRol(id, dto);
+}
   }
   

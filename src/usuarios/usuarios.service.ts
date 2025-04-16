@@ -4,10 +4,15 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { UsuariosRepository } from './usuarios.repositoy';
 import { UsuarioDto } from './dto/usuario.dto';
 import * as bcrypt from 'bcrypt';
-
+import { RolesService } from 'src/roles/roles.service';
+import { toUsuarioDto } from './utils/usuario.mapper';
+import { AsignarRolDto } from './dto/asignar-rol-dto';
 @Injectable()
 export class UsuariosService {
-  constructor(private readonly repo: UsuariosRepository) {}
+  constructor(
+    private readonly repo: UsuariosRepository,
+    private readonly rolesService: RolesService,
+  ) {}
 
   async create(dto: CreateUsuarioDto): Promise<UsuarioDto> {
     const existing = await this.repo.findByEmail(dto.email);
@@ -18,20 +23,18 @@ export class UsuariosService {
     const hash = await bcrypt.hash(dto.password, 10);
     const usuario = this.repo.create({ ...dto, password_hash: hash });
     const saved = await this.repo.save(usuario);
-    const { password_hash, ...rest } = saved;
-    return rest;
+    return toUsuarioDto(saved);
   }
 
   async findAll(): Promise<UsuarioDto[]> {
     const usuarios = await this.repo.findAll();
-    return usuarios.map(({ password_hash, ...rest }) => rest);
+    return usuarios.map(toUsuarioDto);
   }
 
   async findOne(id: number): Promise<UsuarioDto> {
     const usuario = await this.repo.findById(id);
     if (!usuario) throw new NotFoundException('Usuario no encontrado');
-    const { password_hash, ...rest } = usuario;
-    return rest;
+    return toUsuarioDto(usuario);
   }
 
   async update(id: number, dto: UpdateUsuarioDto): Promise<UsuarioDto> {
@@ -43,8 +46,7 @@ export class UsuariosService {
     }
 
     const updated = await this.repo.save({ ...usuario, ...dto });
-    const { password_hash, ...rest } = updated;
-    return rest;
+    return toUsuarioDto(updated);
   }
 
   async remove(id: number) {
@@ -52,5 +54,16 @@ export class UsuariosService {
     if (result.affected === 0) {
       throw new NotFoundException('Usuario no encontrado');
     }
+  }
+
+  async asignarRol(id: number, dto: AsignarRolDto): Promise<UsuarioDto> {
+    const usuario = await this.repo.findById(id);
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
+
+    const rol = await this.rolesService.findOne(dto.rolId);
+    usuario.rol = rol;
+
+    const actualizado = await this.repo.save(usuario);
+    return toUsuarioDto(actualizado);
   }
 }
