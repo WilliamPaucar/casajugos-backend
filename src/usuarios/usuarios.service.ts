@@ -1,69 +1,39 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { UsuariosRepository } from './usuarios.repositoy';
-import { UsuarioDto } from './dto/usuario.dto';
-import * as bcrypt from 'bcrypt';
-import { RolesService } from 'src/roles/roles.service';
-import { toUsuarioDto } from './utils/usuario.mapper';
-import { AsignarRolDto } from './dto/asignar-rol-dto';
+import { Rol } from "src/roles/rol.entity";
+import { UsuariosRepository } from "./usuarios.repositoy";
+import { InjectRepository } from "@nestjs/typeorm";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { CreateUsuarioDto } from "./dto/create-usuario.dto";
+import bcrypt from 'bcrypt'
+
 @Injectable()
 export class UsuariosService {
   constructor(
-    private readonly repo: UsuariosRepository,
-    private readonly rolesService: RolesService,
+    private usuariosRepo: UsuariosRepository,
+    @InjectRepository(Rol)
+    private rolRepo: Repository<Rol>,
   ) {}
 
-  async create(dto: CreateUsuarioDto): Promise<UsuarioDto> {
-    const existing = await this.repo.findByEmail(dto.email);
-    if (existing) {
-      throw new ConflictException('El email ya está registrado');
-    }
+  async crear(dto: CreateUsuarioDto) {
+    const exist = await this.usuariosRepo.findByEmail(dto.email);
+    if (exist) throw new BadRequestException('Email en uso');
 
-    const hash = await bcrypt.hash(dto.password, 10);
-    const usuario = this.repo.create({ ...dto, password_hash: hash });
-    const saved = await this.repo.save(usuario);
-    return toUsuarioDto(saved);
+    const rol = await this.rolRepo.findOne({ where: { id: dto.rol_id } });
+    if (!rol) throw new NotFoundException('Rol inválido');
+
+    const password_hash = await bcrypt.hash(dto.password, 10);
+    const usuario = this.usuariosRepo.create({
+      nombre: dto.nombre,
+      email: dto.email,
+      password_hash,
+      rol,
+      activo: true,
+    });
+
+    return this.usuariosRepo.save(usuario);
   }
 
-  async findAll(): Promise<UsuarioDto[]> {
-    const usuarios = await this.repo.findAll();
-    return usuarios.map(toUsuarioDto);
-  }
-
-  async findOne(id: number): Promise<UsuarioDto> {
-    const usuario = await this.repo.findById(id);
-    if (!usuario) throw new NotFoundException('Usuario no encontrado');
-    return toUsuarioDto(usuario);
-  }
-
-  async update(id: number, dto: UpdateUsuarioDto): Promise<UsuarioDto> {
-    const usuario = await this.repo.findById(id);
-    if (!usuario) throw new NotFoundException('Usuario no encontrado');
-
-    if (dto.password) {
-      dto['password_hash'] = await bcrypt.hash(dto.password, 10);
-    }
-
-    const updated = await this.repo.save({ ...usuario, ...dto });
-    return toUsuarioDto(updated);
-  }
-
-  async remove(id: number) {
-    const result = await this.repo.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-  }
-
-  async asignarRol(id: number, dto: AsignarRolDto): Promise<UsuarioDto> {
-    const usuario = await this.repo.findById(id);
-    if (!usuario) throw new NotFoundException('Usuario no encontrado');
-
-    const rol = await this.rolesService.findOne(dto.rolId);
-    usuario.rol = rol;
-
-    const actualizado = await this.repo.save(usuario);
-    return toUsuarioDto(actualizado);
+  findByEmail(email: string) {
+    return this.usuariosRepo.findByEmail(email);
   }
 }

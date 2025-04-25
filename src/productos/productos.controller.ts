@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update_producto.dto';
 import { Producto } from './producto.entity';
+//Autenticacion t Proteccion de rutas
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('productos')
+@UseGuards(JwtAuthGuard, RolesGuard) // 👈 aplica a todo el controlador
+
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
+  @Roles('admin') // 👈 solo admins pueden crear
   async create(@Body() createProductoDto: CreateProductoDto): Promise<Producto> {
     return this.productosService.create(createProductoDto);
   }
@@ -34,6 +41,7 @@ export class ProductosController {
   }
 
   @Delete(':id')
+  @Roles('admin') // 👈 solo admins pueden eliminar
   async remove(@Param('id') id: number): Promise<void> {
     return this.productosService.remove(id);
   }

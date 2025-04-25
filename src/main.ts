@@ -8,7 +8,11 @@ async function bootstrap() {
     origin: 'http://localhost:5173', // o el puerto donde corre tu frontend
     credentials: true,
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,               // Elimina propiedades desconocidas
+    forbidNonWhitelisted: true,    // Lanza error si vienen propiedades no permitidas
+    transform: true,               // Convierte tipos automáticamente (por ejemplo: string a number)
+  }));
   await app.listen(3000);
 }
 bootstrap();
