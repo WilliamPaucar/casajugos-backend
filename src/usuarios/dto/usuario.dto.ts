@@ -11,3 +11,4 @@ export class UsuarioDto {
   };
   activo: boolean;
 }
+

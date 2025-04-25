@@ -8,8 +8,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@Controller('productos')
 @UseGuards(JwtAuthGuard, RolesGuard) // 👈 aplica a todo el controlador
+@Controller('productos')
 
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}

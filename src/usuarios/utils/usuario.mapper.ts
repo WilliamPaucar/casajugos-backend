@@ -1,19 +1,20 @@
-// src/usuarios/utils/usuario.mapper.ts
+// usuario.mapper.ts
+
 import { Usuario } from '../usuario.entity';
 import { UsuarioDto } from '../dto/usuario.dto';
 
-export function toUsuarioDto(usuario: Usuario): UsuarioDto {
+export function toUsuarioDto(user: Usuario): UsuarioDto {
   return {
-    id: usuario.id,
-    nombre: usuario.nombre,
-    email: usuario.email,
-    rol_id: usuario.rol?.id,
-    rol: usuario.rol
+    id: user.id,
+    nombre: user.nombre,
+    email: user.email,
+    rol_id: user.rol?.id ?? 0,
+    rol: user.rol
       ? {
-          id: usuario.rol.id,
-          nombre: usuario.rol.nombre,
+          id: user.rol.id,
+          nombre: user.rol.nombre,
         }
       : undefined,
-    activo: usuario.activo,
+    activo: user.activo,
   };
 }

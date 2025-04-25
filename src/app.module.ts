@@ -18,6 +18,8 @@ import { DetalleVentasModule } from './detalle-ventas/detalle-ventas.module';
 import { DetalleVenta } from './detalle-ventas/detalle-venta.entity';
 import { RolesModule } from './roles/roles.module';
 import { Rol } from './roles/rol.entity';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -30,8 +32,7 @@ import { Rol } from './roles/rol.entity';
       database: 'casajugos',
       entities: [Producto,Categoria, Insumo, ProductoInsumo,Usuario,Venta, DetalleVenta, Rol],
       synchronize: false, // Cambiar a false en producción
-    })
-    ,ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule, VentasModule, DetalleVentasModule, RolesModule],
+    }), ConfigModule.forRoot(),ProductosModule, CategoriasModule, InsumosModule, ProductosInsumosModule, UsuariosModule, VentasModule, DetalleVentasModule, RolesModule,AuthModule ],
   controllers: [AppController],
   providers: [AppService],
 })

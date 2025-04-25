@@ -29,9 +29,13 @@ export class UsuariosRepository {
     });
   }
 
-  findByEmail(email: string) {
-    return this.repo.findOneBy({ email });
+  findByEmail(email: string): Promise<Usuario> {
+    return this.repo.findOne({
+      where: { email },
+      relations: ['rol'],
+    });
   }
+  
 
   async delete(id: number) {
     return this.repo.delete(id);
