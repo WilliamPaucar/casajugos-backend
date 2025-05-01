@@ -15,7 +15,7 @@ export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
-  @Roles('admin') // 👈 solo admins pueden crear
+  @Roles('admin') // 👈 solo admins pueden crear 
   async create(@Body() createProductoDto: CreateProductoDto): Promise<Producto> {
     return this.productosService.create(createProductoDto);
   }
