@@ -41,7 +41,7 @@ export class ProductosController {
   }
 
   @Delete(':id')
-  @Roles('admin') // 👈 solo admins pueden eliminar
+  @Roles('cajero') // 👈 solo admins pueden eliminar
   async remove(@Param('id') id: number): Promise<void> {
     return this.productosService.remove(id);
   }

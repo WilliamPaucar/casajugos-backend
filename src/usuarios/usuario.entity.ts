@@ -20,5 +20,8 @@ export class Usuario {
   rol: Rol;
 
   @Column({ default: true })
-  activo: boolean; F
+  activo: boolean; 
+  
+  @Column({ type: 'text', nullable: true })
+  refreshToken?: string;
 }
