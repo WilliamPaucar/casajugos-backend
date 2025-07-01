@@ -15,12 +15,14 @@ export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
-  @Roles('cajero') // 👈 solo admins pueden crear 
+  // @Roles('cajero') // 👈 solo admins pueden crear 
+  
   async create(@Body() createProductoDto: CreateProductoDto): Promise<Producto> {
     return this.productosService.create(createProductoDto);
   }
 
   @Get()
+  // @Roles('admin') // 👈 solo admins pueden crear 
   async findAll(): Promise<Producto[]> {
     const productos = await this.productosService.findAll();
     // console.log('Productos en el controlador:', productos);  // También puedes imprimir aquí

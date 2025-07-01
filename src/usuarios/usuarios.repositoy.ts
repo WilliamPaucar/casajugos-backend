@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Usuario } from './usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isKeyObject } from 'util/types';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuariosRepository {
@@ -20,13 +20,14 @@ export class UsuariosRepository {
   }
 
   async saveRefreshToken(userId: number, refreshToken: string) {
-    // Suponiendo que tienes un campo `refreshToken` en tu entidad `Usuario`
-    const user = await this.repo.findOne({where: { id: userId }});
-    if (!user) throw new Error('Usuario no encontrado');
+  const user = await this.repo.findOne({ where: { id: userId } });
+  if (!user) throw new Error('Usuario no encontrado');
 
-    user.refreshToken = refreshToken;
-    await this.repo.save(user);
-  }
+  const hashed = await bcrypt.hash(refreshToken, 10);
+  user.refreshToken = hashed;
+
+  await this.repo.save(user);
+}
   findAll() {
     return this.repo.find();
   }
@@ -44,7 +45,9 @@ export class UsuariosRepository {
       relations: ['rol'],
     });
   }
-  
+    async updateRefreshToken(userId: number, refreshToken: string | null): Promise<void> {
+    await this.repo.update(userId, { refreshToken });
+  }
 
   async delete(id: number) {
     return this.repo.delete(id);
