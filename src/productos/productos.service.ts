@@ -35,6 +35,27 @@ export class ProductosService {
 
     return this.productoRepository.save(producto);
   }
+  // crear muchos registros a la vez 
+  async createMany(productos: CreateProductoDto[]): Promise<Producto[]> {
+  const result: Producto[] = [];
+
+  for (const dto of productos) {
+    const categoria = await this.categoriaRepository.findOne({ where: { id: dto.categoria_id } });
+    if (!categoria) {
+      throw new NotFoundException(`Categoría con ID ${dto.categoria_id} no encontrada`);
+    }
+
+    const producto = this.productoRepository.create({
+      nombre: dto.nombre,
+      precio: dto.precio,
+      categoria,
+    });
+
+    result.push(await this.productoRepository.save(producto));
+  }
+
+  return result;
+}
 
   // Obtener todos los productos con su categoría asociada
   async findAll(): Promise<Producto[]> {

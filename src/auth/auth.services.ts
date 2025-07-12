@@ -31,7 +31,9 @@ export class AuthService {
 
   // Login: Generar access y refresh tokens, guardar refresh en BD
   async login(user: any) {
-    const payload = { sub: user.id, email: user.email, rol: user.rol.nombre };
+    console.log("🔍 Usuario en login():", user);
+const payload = { sub: user.id, email: user.email, rol: user.rol.nombre, nombre: user.nombre };
+
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: process.env.JWT_EXPIRES_IN }); // Ejemplo: 20 minutos
     const refreshToken = this.jwtService.sign(payload, {
@@ -66,6 +68,7 @@ async refreshTokens(refreshToken: string): Promise<TokensDto> {
       sub: user.id,
       email: user.email,
       rol: user.rol.nombre,
+      nombre:user.nombre,
     };
 
     const tokens = await this.generateTokens(payload);

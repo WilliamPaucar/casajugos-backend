@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard) // 👈 aplica a todo el controlador
+// @UseGuards(JwtAuthGuard, RolesGuard) // 👈 aplica a todo el controlador
 @Controller('productos')
 
 export class ProductosController {
@@ -20,6 +20,12 @@ export class ProductosController {
   async create(@Body() createProductoDto: CreateProductoDto): Promise<Producto> {
     return this.productosService.create(createProductoDto);
   }
+
+  @Post('bulk')
+async createMany(@Body() productos: CreateProductoDto[]) {
+  return this.productosService.createMany(productos);
+}
+
 
   @Get()
   // @Roles('admin') // 👈 solo admins pueden crear 
