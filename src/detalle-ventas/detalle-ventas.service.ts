@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DetalleVenta } from './detalle-venta.entity';
 import { Venta } from 'src/ventas/ventas.entity';
 import { Producto } from 'src/productos/producto.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateDetalleVentaDto } from './dto/create-detalle-venta.dto';
 import { UpdateDetalleVentaDto } from './dto/update-detalle-venta.dto';
 
@@ -20,22 +20,31 @@ export class DetalleVentaService {
     private productosRepo: Repository<Producto>,
   ) {}
 
-  async crear(dto: CreateDetalleVentaDto): Promise<DetalleVenta> {
-    const venta = await this.ventasRepo.findOneBy({ id: dto.ventaId });
-    if (!venta) throw new NotFoundException('Venta no encontrada');
+async crear(
+  dto: CreateDetalleVentaDto,
+  manager?: EntityManager
+): Promise<DetalleVenta> {
+  const repo = manager?.getRepository(DetalleVenta) ?? this.detalleRepo;
+  const ventaRepo = manager?.getRepository(Venta) ?? this.ventasRepo;
+  const productoRepo = manager?.getRepository(Producto) ?? this.productosRepo;
 
-    const producto = await this.productosRepo.findOneBy({ id: dto.productoId });
-    if (!producto) throw new NotFoundException('Producto no encontrado');
+  const venta = await ventaRepo.findOneBy({ id: dto.ventaId });
+  console.log(`esta es la venta : `+ venta.id);
+  if (!venta) throw new NotFoundException('Venta no encontrada');
 
-    const detalle = this.detalleRepo.create({
-      cantidad: dto.cantidad,
-      precioUnitario: dto.precioUnitario,
-      venta,
-      producto,
-    });
+  const producto = await productoRepo.findOneBy({ id: dto.productoId });
+  if (!producto) throw new NotFoundException('Producto no encontrado');
 
-    return this.detalleRepo.save(detalle);
-  }
+  const detalle = repo.create({
+    cantidad: dto.cantidad,
+    precioUnitario: dto.precioUnitario,
+    venta,
+    producto,
+  });
+
+  return repo.save(detalle);
+}
+
 
   findAll(): Promise<DetalleVenta[]> {
     return this.detalleRepo.find({ relations: ['venta', 'producto'] });

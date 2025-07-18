@@ -6,13 +6,12 @@ import { UpdateVentaDto } from './dto/update-ventas.dto';
 
 @Controller('ventas')
 export class VentasController {
-  constructor(private readonly ventasService: VentasService) {}
+  constructor(private readonly ventasService: VentasService) { }
 
   @Post()
-  crear(@Body() dto: CreateVentaDto): Promise<Venta> {
-    return this.ventasService.crearVenta(dto);
+  async registrarVenta(@Body() createVentaDto: CreateVentaDto) {
+    return this.ventasService.registrarVenta(createVentaDto);
   }
-
   @Get()
   obtenerTodas(): Promise<Venta[]> {
     return this.ventasService.obtenerTodas();
@@ -29,7 +28,7 @@ export class VentasController {
   ): Promise<Venta> {
     return this.ventasService.actualizarVenta(id, dto);
   }
-  
+
   @Delete(':id')
   eliminar(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.ventasService.eliminarVenta(id);
