@@ -1,5 +1,5 @@
 // create-detalle-venta.dto.ts
-import { IsInt, IsNumber, Min } from 'class-validator';
+import { IsInt, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateDetalleVentaDto {
   @IsInt()
@@ -14,4 +14,6 @@ export class CreateDetalleVentaDto {
 
   @IsNumber()
   precioUnitario: number;
+  @IsString()
+  observacion: string;
 }

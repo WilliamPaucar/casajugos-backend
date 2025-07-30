@@ -3,6 +3,7 @@ import {
   IsInt,
   IsNumber,
   IsPositive,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -18,6 +19,8 @@ class ProductoVentaDto {
   @IsNumber()
   @IsPositive()
   precioUnitario: number;
+  @IsString()
+  observacion: string;
 }
 
 export class CreateVentaDto {

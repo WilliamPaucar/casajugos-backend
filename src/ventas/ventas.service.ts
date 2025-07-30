@@ -17,8 +17,7 @@ export class VentasService {
     private readonly usuariosRepo: Repository<Usuario>,
     private readonly dataSource: DataSource,
     private readonly detalleService: DetalleVentaService,
-
-  ) { }
+  ) {}
 
   // async crearVenta(dto: CreateVentaDto): Promise<Venta> {
   //   const venta = this.ventasRepo.create();
@@ -60,8 +59,9 @@ export class VentasService {
             productoId: item.productoId,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
+            observacion: item.observacion,
           },
-          queryRunner.manager // importante: para mantener dentro de la transacción
+          queryRunner.manager, // importante: para mantener dentro de la transacción
         );
 
         // 3. Obtener insumos del producto
@@ -72,7 +72,7 @@ export class VentasService {
         JOIN insumos i ON i.id = pi.insumo_id
         WHERE pi.producto_id = $1
         `,
-          [item.productoId]
+          [item.productoId],
         );
 
         // 4. Validar y descontar insumos
@@ -82,7 +82,7 @@ export class VentasService {
 
           if (disponible < totalUsado) {
             throw new Error(
-              `Insumo insuficiente para insumo_id ${insumo.insumo_id}`
+              `Insumo insuficiente para insumo_id ${insumo.insumo_id}`,
             );
           }
 
@@ -91,7 +91,7 @@ export class VentasService {
             'insumos',
             { id: insumo.insumo_id },
             'cantidad_disponible',
-            totalUsado
+            totalUsado,
           );
         }
       }
@@ -107,8 +107,6 @@ export class VentasService {
       await queryRunner.release();
     }
   }
-
-
 
   async obtenerTodas(): Promise<Venta[]> {
     return this.ventasRepo.find({ relations: ['usuario'] });
@@ -142,5 +140,4 @@ export class VentasService {
 
     await this.ventasRepo.remove(venta);
   }
-
 }
