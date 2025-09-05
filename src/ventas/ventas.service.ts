@@ -109,7 +109,19 @@ export class VentasService {
   }
 
   async obtenerTodas(): Promise<Venta[]> {
-    return this.ventasRepo.find({ relations: ['usuario'] });
+    return this.ventasRepo.find({
+      relations: {
+        usuario: {
+          rol: true,
+        },
+        detalles: {
+          producto: true,
+        },
+      },
+      order: {
+        fecha: 'DESC',
+      },
+    });
   }
 
   async obtenerPorId(id: number): Promise<Venta> {
