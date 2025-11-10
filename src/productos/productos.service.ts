@@ -18,51 +18,61 @@ export class ProductosService {
 
   // Crear un nuevo producto
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
-    const { nombre, precio, categoria_id } = createProductoDto;
+    const { nombre, precio, categoria_id, imagen } = createProductoDto;
 
+    console.log('DTO recibido:', createProductoDto); // 👀 debug
     // Verificar que la categoría existe antes de crear el producto
-    const categoria = await this.categoriaRepository.findOne({ where: { id: categoria_id } });
+    const categoria = await this.categoriaRepository.findOne({
+      where: { id: Number(categoria_id) },
+    });
     if (!categoria) {
+      console.error('Categoría no encontrada con ID:', categoria_id);
       throw new NotFoundException('Categoría no encontrada');
     }
 
     // Crear un producto y asignar la categoría
     const producto = this.productoRepository.create({
       nombre,
-      precio,
+      precio: Number(precio),
       categoria,
+      imagen,
     });
-
+    console.log('Producto a guardar:', producto); // 👀 debug
     return this.productoRepository.save(producto);
   }
-  // crear muchos registros a la vez 
+  // crear muchos registros a la vez
   async createMany(productos: CreateProductoDto[]): Promise<Producto[]> {
-  const result: Producto[] = [];
+    const result: Producto[] = [];
 
-  for (const dto of productos) {
-    const categoria = await this.categoriaRepository.findOne({ where: { id: dto.categoria_id } });
-    if (!categoria) {
-      throw new NotFoundException(`Categoría con ID ${dto.categoria_id} no encontrada`);
+    for (const dto of productos) {
+      const categoria = await this.categoriaRepository.findOne({
+        where: { id: dto.categoria_id },
+      });
+      if (!categoria) {
+        throw new NotFoundException(`
+          Categoría con ID ${dto.categoria_id} no encontrada`);
+      }
+
+      const producto = this.productoRepository.create({
+        nombre: dto.nombre,
+        precio: dto.precio,
+        imagen: dto.imagen,
+      });
+
+      result.push(await this.productoRepository.save(producto));
     }
 
-    const producto = this.productoRepository.create({
-      nombre: dto.nombre,
-      precio: dto.precio,
-      categoria,
-    });
-
-    result.push(await this.productoRepository.save(producto));
+    return result;
   }
-
-  return result;
-}
 
   // Obtener todos los productos con su categoría asociada
   async findAll(): Promise<Producto[]> {
-
-    return this.productoRepository.find({ relations: ['categoria'],    order: {
-        id: 'ASC',  // Puedes ordenar por 'id' o por 'nombre', dependiendo de tus necesidades
-      }, });
+    return this.productoRepository.find({
+      relations: ['categoria'],
+      order: {
+        id: 'ASC', // Puedes ordenar por 'id' o por 'nombre', dependiendo de tus necesidades
+      },
+    });
   }
 
   // Obtener un producto por su ID
@@ -78,8 +88,14 @@ export class ProductosService {
   }
 
   // Actualizar un producto por su ID
-  async update(id: number, updateProductoDto: UpdateProductoDto): Promise<Producto> {
-    const producto = await this.productoRepository.findOne({ where: { id }, relations: ['categoria'] });
+  async update(
+    id: number,
+    updateProductoDto: UpdateProductoDto,
+  ): Promise<Producto> {
+    const producto = await this.productoRepository.findOne({
+      where: { id },
+      relations: ['categoria'],
+    });
     if (!producto) {
       throw new NotFoundException('Producto no encontrado');
     }
@@ -88,7 +104,9 @@ export class ProductosService {
 
     // Si se proporciona una nueva categoría, buscarla y asignarla
     if (categoria_id) {
-      const categoria = await this.categoriaRepository.findOne({ where: { id: categoria_id } });
+      const categoria = await this.categoriaRepository.findOne({
+        where: { id: categoria_id },
+      });
       if (!categoria) {
         throw new NotFoundException('Categoría no encontrada');
       }
