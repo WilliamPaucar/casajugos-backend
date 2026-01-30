@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { UsuariosRepository } from './usuarios.repositoy';
@@ -7,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { RolesService } from 'src/roles/roles.service';
 import { toUsuarioDto } from './utils/usuario.mapper';
 import { AsignarRolDto } from './dto/asignar-rol-dto';
+import { Rol } from 'src/roles/rol.entity';
 @Injectable()
 export class UsuariosService {
   constructor(
@@ -19,9 +24,16 @@ export class UsuariosService {
     if (existing) {
       throw new ConflictException('El email ya está registrado');
     }
-
     const hash = await bcrypt.hash(dto.password, 10);
-    const usuario = this.repo.create({ ...dto, password_hash: hash });
+
+    const usuario = this.repo.create({
+      nombre: dto.nombre,
+      email: dto.email,
+      password_hash: hash,
+      activo: dto.activo ?? true,
+      rol: { id: dto.rol_id } as Rol, // ✅
+    });
+
     const saved = await this.repo.save(usuario);
     return toUsuarioDto(saved);
   }

@@ -22,6 +22,7 @@ import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -38,7 +39,16 @@ import { AppService } from './app.service';
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
-        entities: [Producto, Categoria, Insumo, ProductoInsumo, Usuario, Venta, DetalleVenta, Rol],
+        entities: [
+          Producto,
+          Categoria,
+          Insumo,
+          ProductoInsumo,
+          Usuario,
+          Venta,
+          DetalleVenta,
+          Rol,
+        ],
         synchronize: false, // true solo en desarrollo
       }),
     }),
@@ -51,6 +61,7 @@ import { AppService } from './app.service';
     DetalleVentasModule,
     RolesModule,
     AuthModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

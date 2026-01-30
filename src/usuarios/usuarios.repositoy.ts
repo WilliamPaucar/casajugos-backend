@@ -20,14 +20,14 @@ export class UsuariosRepository {
   }
 
   async saveRefreshToken(userId: number, refreshToken: string) {
-  const user = await this.repo.findOne({ where: { id: userId } });
-  if (!user) throw new Error('Usuario no encontrado');
+    const user = await this.repo.findOne({ where: { id: userId } });
+    if (!user) throw new Error('Usuario no encontrado');
 
-  const hashed = await bcrypt.hash(refreshToken, 10);
-  user.refreshToken = hashed;
+    const hashed = await bcrypt.hash(refreshToken, 10);
+    user.refreshToken = hashed;
 
-  await this.repo.save(user);
-}
+    await this.repo.save(user);
+  }
   findAll() {
     return this.repo.find();
   }
@@ -45,7 +45,10 @@ export class UsuariosRepository {
       relations: ['rol'],
     });
   }
-    async updateRefreshToken(userId: number, refreshToken: string | null): Promise<void> {
+  async updateRefreshToken(
+    userId: number,
+    refreshToken: string | null,
+  ): Promise<void> {
     await this.repo.update(userId, { refreshToken });
   }
 

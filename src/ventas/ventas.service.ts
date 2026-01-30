@@ -6,13 +6,14 @@ import { CreateVentaDto } from './dto/create-ventas.dto';
 import { Usuario } from '../usuarios/usuario.entity';
 import { UpdateVentaDto } from './dto/update-ventas.dto';
 import { DetalleVentaService } from 'src/detalle-ventas/detalle-ventas.service';
+import { VentasGateway } from './gateway/ventas.gateway';
 
 @Injectable()
 export class VentasService {
   constructor(
     @InjectRepository(Venta)
     private readonly ventasRepo: Repository<Venta>,
-
+    private readonly ventasGateway: VentasGateway,
     @InjectRepository(Usuario)
     private readonly usuariosRepo: Repository<Usuario>,
     private readonly dataSource: DataSource,
@@ -99,6 +100,10 @@ export class VentasService {
       // 5. Confirmar transacción
       await queryRunner.commitTransaction();
 
+      this.ventasGateway.emitirVentaCreada({
+        ventaId: venta.id,
+        fecha: venta.fecha,
+      });
       return { success: true, ventaId: venta.id };
     } catch (error) {
       await queryRunner.rollbackTransaction();
