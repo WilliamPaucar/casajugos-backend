@@ -20,17 +20,6 @@ export class VentasService {
     private readonly detalleService: DetalleVentaService,
   ) {}
 
-  // async crearVenta(dto: CreateVentaDto): Promise<Venta> {
-  //   const venta = this.ventasRepo.create();
-
-  //   if (dto.usuarioId) {
-  //     const usuario = await this.usuariosRepo.findOneBy({ id: dto.usuarioId });
-  //     if (!usuario) throw new NotFoundException('Usuario no encontrado');
-  //     venta.usuario = usuario;
-  //   }
-
-  //   return this.ventasRepo.save(venta);
-  // }
 
   // REGISTRAR VENTASS
   async registrarVenta(data: CreateVentaDto) {
