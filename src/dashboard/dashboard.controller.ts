@@ -1,37 +1,22 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { DashboardQueryDto } from './dto/dashboard-query.dto';
 
-@Controller('dashboard')
+@Controller('dashboard') // Ruta base: /dashboard
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @Get()
-  async getDashboard(@Query() query: DashboardQueryDto) {
-    const from = new Date(query.from);
-    const to = new Date(query.to);
-    const top = query.top ?? 5;
+  // Consumirá: GET http://localhost:3000/dashboard/metricas?from=YYYY-MM-DD&to=YYYY-MM-DD
+  @Get('metricas')
+  async obtenerMetricas(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    return await this.dashboardService.obtenerMetricasDashboard(from, to);
+  }
 
-    const [
-      kpis,
-      ventasSemanales,
-      ventasMensuales,
-      topProductos,
-      topCategorias,
-    ] = await Promise.all([
-      this.dashboardService.getKpis(from, to),
-      this.dashboardService.getVentasSemanales(from, to),
-      this.dashboardService.getVentasMensuales(from, to),
-      this.dashboardService.getTopProductos(from, to, top),
-      this.dashboardService.getTopCategorias(from, to),
-    ]);
-
-    return {
-      kpis,
-      ventasSemanales,
-      ventasMensuales,
-      topProductos,
-      topCategorias,
-    };
+  // Consumirá: GET http://localhost:3000/dashboard/cierre-caja
+  @Get('cierre-caja')
+  async obtenerCierreCaja() {
+    return await this.dashboardService.obtenerResumenCierreCaja();
   }
 }

@@ -96,7 +96,7 @@ export class VentasService {
       return { success: true, ventaId: venta.id };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new Error(`Error al registrar venta: ${error.message}`);
+      throw new Error(`Error al registrar venta: ${error}`);
     } finally {
       await queryRunner.release();
     }
