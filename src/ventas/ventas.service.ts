@@ -18,7 +18,7 @@ export class VentasService {
     private readonly usuariosRepo: Repository<Usuario>,
     private readonly dataSource: DataSource,
     private readonly detalleService: DetalleVentaService,
-  ) {}
+  ) { }
 
 
   // REGISTRAR VENTASS
@@ -87,13 +87,21 @@ export class VentasService {
       }
 
       // 5. Confirmar transacción
+      // 5. Confirmar transacción
       await queryRunner.commitTransaction();
 
+      // Modifica esta sección para mapear 'id' correctamente y pasar el usuario
       this.ventasGateway.emitirVentaCreada({
-        ventaId: venta.id,
+        id: venta.id,              // 👈 Cambiado de 'ventaId' a 'id' para acoplar con React
         fecha: venta.fecha,
+        usuario: {
+          nombre: usuario.nombre,  // 👈 Opcional pero recomendado para evitar errores de tipado
+        },
+        detalles: []               // Arreglo vacío base (React recargará los reales con el fetch)
       });
+
       return { success: true, ventaId: venta.id };
+
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new Error(`Error al registrar venta: ${error}`);
