@@ -88,24 +88,27 @@ export class ProductosService {
   }
 
   // Actualizar un producto por su ID
+// Actualizar un producto por su ID
   async update(
     id: number,
     updateProductoDto: UpdateProductoDto,
   ): Promise<Producto> {
+    // 1. Buscamos el producto existente
     const producto = await this.productoRepository.findOne({
       where: { id },
       relations: ['categoria'],
     });
+    
     if (!producto) {
       throw new NotFoundException('Producto no encontrado');
     }
 
     const { nombre, precio, categoria_id } = updateProductoDto;
 
-    // Si se proporciona una nueva categoría, buscarla y asignarla
+    // 2. Si viene una categoría, la buscamos y la asignamos directamente
     if (categoria_id) {
       const categoria = await this.categoriaRepository.findOne({
-        where: { id: categoria_id },
+        where: { id: Number(categoria_id) }, // Forzar cast a número por seguridad
       });
       if (!categoria) {
         throw new NotFoundException('Categoría no encontrada');
@@ -113,11 +116,12 @@ export class ProductosService {
       producto.categoria = categoria;
     }
 
-    // Actualizar los campos
-    producto.nombre = nombre ?? producto.nombre;
-    producto.precio = precio ?? producto.precio;
+    // 3. Actualizamos los campos primitivos de manera limpia
+    if (nombre !== undefined) producto.nombre = nombre;
+    if (precio !== undefined) producto.precio = Number(precio);
 
-    return this.productoRepository.save(producto);
+    // 4. Guardamos la entidad mutada de forma segura
+    return await this.productoRepository.save(producto);
   }
 
   // Eliminar un producto por su ID

@@ -10,5 +10,6 @@ export class UpdateProductoDto {
   @IsOptional()
   categoria_id?: number; // Esta es una propiedad opcional
   @IsString()
+  @IsOptional()
   imagen?: string;
 }

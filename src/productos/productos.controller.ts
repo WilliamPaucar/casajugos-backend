@@ -60,8 +60,6 @@ export class ProductosController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createProductoDto: CreateProductoDto,
   ): Promise<Producto> {
-    console.log('✅ Controller - Body recibido:', createProductoDto);
-    console.log('✅ Controller - Archivo recibido:', file);
     const imageUrl = file ? `/uploads/${file.filename}` : null;
     return this.productosService.create({
       ...createProductoDto,
