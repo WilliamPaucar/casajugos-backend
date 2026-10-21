@@ -1,15 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductosController } from './productos.controller';
+import { ProductosService } from './productos.service';
 
 describe('ProductosController', () => {
   let controller: ProductosController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [ProductosController],
-    }).compile();
+  const mockProductosService = {
+    create: jest.fn(),
+    createMany: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
-    controller = module.get<ProductosController>(ProductosController);
+  beforeEach(async () => {
+    const module: TestingModule =
+      await Test.createTestingModule({
+        controllers: [ProductosController],
+        providers: [
+          {
+            provide: ProductosService,
+            useValue: mockProductosService,
+          },
+        ],
+      }).compile();
+
+    controller = module.get<ProductosController>(
+      ProductosController,
+    );
   });
 
   it('should be defined', () => {

@@ -1,15 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductosInsumosController } from './productos-insumos.controller';
+import { ProductoInsumoController } from './productos-insumos.controller';
+import { ProductoInsumoService } from './productos-insumos.service';
 
-describe('ProductosInsumosController', () => {
-  let controller: ProductosInsumosController;
+describe('ProductoInsumoController', () => {
+  let controller: ProductoInsumoController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ProductosInsumosController],
+      controllers: [ProductoInsumoController],
+      providers: [
+        { provide: ProductoInsumoService, useValue: { /* Mock mínimo */ } },
+      ],
     }).compile();
 
-    controller = module.get<ProductosInsumosController>(ProductosInsumosController);
+    controller = module.get<ProductoInsumoController>(ProductoInsumoController);
   });
 
   it('should be defined', () => {
