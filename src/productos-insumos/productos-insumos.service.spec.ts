@@ -1,15 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductosInsumosService } from './productos-insumos.service';
+import { ProductoInsumoService } from './productos-insumos.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { ProductoInsumo } from '../productos-insumos/producto-insumo.entity';
 
-describe('ProductosInsumosService', () => {
-  let service: ProductosInsumosService;
+const makeRepositoryMock = () => ({
+  find: jest.fn(),
+  findOne: jest.fn(),
+  findOneBy: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+  remove: jest.fn(),
+  createQueryBuilder: jest.fn(),
+});
+
+describe('ProductoInsumoService', () => {
+  let service: ProductoInsumoService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductosInsumosService],
+      providers: [
+        ProductoInsumoService,
+        { provide: getRepositoryToken(ProductoInsumo), useValue: makeRepositoryMock() },
+      ],
     }).compile();
 
-    service = module.get<ProductosInsumosService>(ProductosInsumosService);
+    service = module.get<ProductoInsumoService>(ProductoInsumoService);
   });
 
   it('should be defined', () => {
