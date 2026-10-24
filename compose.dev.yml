@@ -1,0 +1,32 @@
+name: casajugos-backend-dev
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - "127.0.0.1:3000:3000"
+
+    env_file:
+      - .env
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+
+    volumes:
+      - .:/app
+      - backend_node_modules:/app/node_modules
+
+    networks:
+      - red_postgres
+
+volumes:
+  backend_node_modules:
+
+networks:
+  red_postgres:
+    external: true
+    name: docker_compose_default
