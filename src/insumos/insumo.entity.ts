@@ -16,7 +16,7 @@ export class Insumo {
     scale: 2,
     default: 0,
   })
-  cantidad_disponible: number;s
+  cantidad_disponible: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   unidad: string;

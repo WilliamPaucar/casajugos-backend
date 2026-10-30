@@ -31,10 +31,6 @@ export class DetalleVenta {
   @Index('idx_detalle_venta_producto')
   @ManyToOne(() => Producto, {
     eager: true,
-    onDelete: 'CASCADE',
-  })
-  @ManyToOne(() => Producto, {
-    eager: true,
     onDelete: 'NO ACTION',
   })
   @JoinColumn({
