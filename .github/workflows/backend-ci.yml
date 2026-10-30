@@ -1,0 +1,35 @@
+
+name: Backend CI - NestJS
+
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches: [develop, master]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    name: Pruebas y compilacion
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener codigo
+        uses: actions/checkout@v7
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas Jest
+        run: npm test -- --runInBand
+
+      - name: Compilar NestJS
+        run: npm run build
