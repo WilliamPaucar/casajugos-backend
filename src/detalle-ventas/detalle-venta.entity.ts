@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { Venta } from 'src/ventas/ventas.entity';
 import { Producto } from 'src/productos/producto.entity';
@@ -17,14 +18,27 @@ export class DetalleVenta {
   @Column({ type: 'numeric', precision: 10, scale: 2, name: 'precio_unitario' })
   precioUnitario: number;
 
-  @ManyToOne(() => Venta, (venta) => venta.detalles, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'venta_id' })
+  @Index('idx_detalle_venta_venta')
+  @ManyToOne(() => Venta, (venta) => venta.detalles, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({
+    name: 'venta_id',
+    foreignKeyConstraintName: 'detalle_venta_venta_id_fkey',
+  })
   venta: Venta;
 
-  @ManyToOne(() => Producto, { eager: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'producto_id' })
+  @Index('idx_detalle_venta_producto')
+  @ManyToOne(() => Producto, {
+    eager: true,
+    onDelete: 'NO ACTION',
+  })
+  @JoinColumn({
+    name: 'producto_id',
+    foreignKeyConstraintName: 'detalle_venta_producto_id_fkey',
+  })
   producto: Producto;
 
-  @Column({ type: 'text', nullable: true }) // NUEVO CAMPO
+  @Column({ type: 'varchar', length: 100, nullable: true })
   observacion?: string;
 }
