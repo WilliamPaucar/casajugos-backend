@@ -7,13 +7,19 @@ export class Insumo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable: false} )
+  @Column({ type: 'varchar', length: 100, nullable: false })
   nombre: string;
-  @Column()
-  cantidad_disponible:number;
 
-  @Column()
-  unidad:string;
+  @Column({
+    type: 'numeric',
+    precision: 10,
+    scale: 2,
+    default: 0,
+  })
+  cantidad_disponible: number;s
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  unidad: string;
   @OneToMany(() => ProductoInsumo, pi => pi.insumo)
   productoInsumos: ProductoInsumo[];
 }

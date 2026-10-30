@@ -11,14 +11,20 @@ export class ProductoInsumo {
   insumo_id: number;
 
   @ManyToOne(() => Producto, producto => producto.productoInsumos, { eager: true, onDelete: 'CASCADE' })
-  
-  @JoinColumn({ name: 'producto_id' }) // 👈 importante
+
+  @JoinColumn({
+    name: 'producto_id',
+    foreignKeyConstraintName: 'producto_insumo_producto_id_fkey',
+  })
   producto: Producto;
-  
+
   @ManyToOne(() => Insumo, insumo => insumo.productoInsumos, { eager: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'insumo_id' }) // 👈 importante
+  @JoinColumn({
+    name: 'insumo_id',
+    foreignKeyConstraintName: 'producto_insumo_insumo_id_fkey',
+  })
   insumo: Insumo;
 
-  @Column('decimal')
+  @Column({ type: 'numeric', precision: 10, scale: 2 })
   cantidad_usada: number;
 }

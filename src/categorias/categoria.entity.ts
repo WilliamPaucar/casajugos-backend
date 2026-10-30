@@ -6,9 +6,9 @@ export class Categoria {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable: false} )
+  @Column({ type: 'varchar', length: 100, nullable: false })
   nombre: string;
-    
+
   @OneToMany(() => Producto, (producto) => producto.categoria)
   productos: Producto[];
 }

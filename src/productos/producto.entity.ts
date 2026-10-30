@@ -14,7 +14,7 @@ export class Producto {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100, nullable: false })
   nombre: string;
 
   @Column('numeric', { precision: 10, scale: 2 })
@@ -22,7 +22,10 @@ export class Producto {
   @ManyToOne(() => Categoria, (categoria) => categoria.productos, {
     eager: true,
   })
-  @JoinColumn({ name: 'categoria_id' })
+  @JoinColumn({
+    name: 'categoria_id',
+    foreignKeyConstraintName: 'productos_categoria_id_fkey',
+  })
   categoria: Categoria;
 
   @OneToMany(() => ProductoInsumo, (pi) => pi.producto)

@@ -25,12 +25,19 @@ export class Usuario {
     nullable: false,
     eager: true, // ✔ permite que user.rol venga siempre cargado
   })
-  @JoinColumn({ name: 'rol_id' })
+  @JoinColumn({
+    name: 'rol_id',
+    foreignKeyConstraintName: 'usuarios_rol_id_fkey',
+  })
   rol: Rol;
 
-  @Column({ default: true })
+  @Column({
+    type: 'boolean',
+    default: true,
+    nullable: true,
+  })
   activo: boolean;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   refreshToken?: string;
 }
