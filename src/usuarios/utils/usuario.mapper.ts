@@ -8,7 +8,6 @@ export function toUsuarioDto(user: Usuario): UsuarioDto {
     id: user.id,
     nombre: user.nombre,
     email: user.email,
-    password_hash: user.password_hash,
     rol_id: user.rol.id,
     rol: user.rol
       ? {

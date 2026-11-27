@@ -1,7 +1,7 @@
+
 import {
   IsArray,
   IsInt,
-  IsNumber,
   IsPositive,
   IsString,
   ValidateNested,
@@ -16,17 +16,11 @@ class ProductoVentaDto {
   @IsPositive()
   cantidad: number;
 
-  @IsNumber()
-  @IsPositive()
-  precioUnitario: number;
   @IsString()
   observacion: string;
 }
 
 export class CreateVentaDto {
-  @IsInt()
-  usuarioId: number;
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductoVentaDto)
