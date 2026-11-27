@@ -4,7 +4,6 @@ export class UsuarioDto {
   nombre: string;
   email: string;
   rol_id: number;
-  password_hash: string;
   rol?: {
     id: number;
     nombre: string;

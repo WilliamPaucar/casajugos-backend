@@ -18,7 +18,7 @@ export class DetalleVentaService {
 
     @InjectRepository(Producto)
     private productosRepo: Repository<Producto>,
-  ) {}
+  ) { }
 
   async crear(
     dto: CreateDetalleVentaDto,
@@ -29,8 +29,10 @@ export class DetalleVentaService {
     const productoRepo = manager?.getRepository(Producto) ?? this.productosRepo;
 
     const venta = await ventaRepo.findOneBy({ id: dto.ventaId });
-    console.log(`esta es la venta : ` + venta.id);
-    if (!venta) throw new NotFoundException('Venta no encontrada');
+
+    if (!venta) {
+      throw new NotFoundException('Venta no encontrada');
+    }
 
     const producto = await productoRepo.findOneBy({ id: dto.productoId });
     if (!producto) throw new NotFoundException('Producto no encontrado');

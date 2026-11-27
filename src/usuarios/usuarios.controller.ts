@@ -8,15 +8,21 @@ import {
   Delete,
   ParseIntPipe,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { AsignarRolDto } from './dto/asignar-rol-dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
 @Controller('usuarios')
 export class UsuariosController {
-  constructor(private readonly service: UsuariosService) {}
+  constructor(private readonly service: UsuariosService) { }
 
   @Post()
   create(@Body() dto: CreateUsuarioDto) {
